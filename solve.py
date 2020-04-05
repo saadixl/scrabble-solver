@@ -1,16 +1,27 @@
 import json
 import itertools
 
+def lexi_sort(word):
+	chars = [char for char in word]
+	chars.sort()
+	return ''.join(chars)
+
 print("Insert the scrabble you want to solve: ")
 scrabble = str(input()).lower()
-possible_solutions = []
+# Sorting the inserted word lexicographically
+sorted = lexi_sort(scrabble)
 
-t=list(itertools.permutations(scrabble,len(scrabble)))
-for i in range(0,len(t)):
-    possible_solutions.append(''.join(t[i]))
-
-with open('./en_dictionary.json') as dictionary_json:
+# Opening the indexed dictionary
+with open('./indexed_dictionary_en.json') as dictionary_json:
 	dictionary = json.load(dictionary_json)
-	for ps in possible_solutions:
-		if ps in dictionary.keys():
-			print("{} is a valid word!".format(ps))
+	# If the sorted word is available as a key
+	if sorted in dictionary.keys():
+		# There is possible solution
+		possible_solutions = dictionary[sorted]
+		len = len(possible_solutions)
+		# Print the possible solutions
+		print("I've found {} possible solutions!".format(len))
+		for i in range(len):
+			print("{}) {}".format(i + 1, possible_solutions[i]))
+	else:
+		print("It's impossible to make a word with {}!".format(scrabble))
